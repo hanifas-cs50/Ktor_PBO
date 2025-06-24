@@ -1,17 +1,10 @@
-package com.example
-
+import routes.configureRouting
 import io.ktor.server.application.*
-import io.ktor.server.sessions.*
 import io.ktor.server.response.*
-import com.example.configureRouting
+import io.ktor.server.sessions.*
 import kotlinx.serialization.Serializable
 
-@Serializable
-data class UserSession(
-  val userId: String,
-  val role: String,
-  val name: String
-)
+@Serializable data class UserSession(val userId: String, val role: String, val name: String)
 
 fun main(args: Array<String>) {
   io.ktor.server.netty.EngineMain.main(args)

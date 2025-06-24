@@ -1,0 +1,46 @@
+package templates.admin.dosen
+
+import DosenDTO
+import kotlinx.html.*
+
+fun HTML.form(dosen: DosenDTO? = null) {
+  head { title { +if (dosen == null) "Tambah Dosen" else "Edit Dosen" } }
+  body {
+    h1 { +if (dosen == null) "Tambah Dosen" else "Edit Dosen" }
+
+    form(
+      action =
+        if (dosen == null) "/admin/dosen/add"
+        else "/admin/dosen/edit/${dosen.id_dosen}",
+      method = FormMethod.post
+    ) {
+      if (dosen != null) {
+        p {
+          label { +"NIDN: " }
+          textInput(name = "nidn") {
+            value = dosen.nidn
+            disabled = true
+          }
+        }
+      }
+      p {
+        label { +"Nama: " }
+        textInput(name = "nama") { value = dosen?.nama ?: "" }
+      }
+      p {
+        label { +"Alamat: " }
+        textArea(rows = "3", cols = "30") {
+          name = "alamat"
+          +dosen?.alamat.orEmpty()
+        }
+      }
+      p {
+        label { +"Password: " }
+        passwordInput(name = "password") {
+          placeholder = if (dosen == null) "Masukkan password" else "Biarkan kosong jika tidak diubah"
+        }
+      }
+      p { submitInput { value = if (dosen == null) "Tambah" else "Update" } }
+    }
+  }
+}

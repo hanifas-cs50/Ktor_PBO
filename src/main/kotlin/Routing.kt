@@ -1,9 +1,6 @@
-package com.example
+package routes
 
-import com.example.routes.authRoutes
-import com.example.routes.dashboard
-import com.example.routes.mhsRoutes
-import com.example.routes.dosenRoutes 
+import UserSession
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*
@@ -24,8 +21,8 @@ fun Application.configureRouting() {
     }
 
     authRoutes()
-    dashboard()
-    mhsRoutes()
-    dosenRoutes()
+    route("/admin") { adminRoutes() }
+    route("/mahasiswa") { mahasiswaRoutes() }
+    route("/dosen") { dosenRoutes() }
   }
 }

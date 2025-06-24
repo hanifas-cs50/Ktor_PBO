@@ -7,12 +7,12 @@ data class KrsDTO(
   val id_mhs: Int,
   val id_matkul: Int,
   val status: String,
-  val nilai: String?
+  val nilai: Int?
 )
 
 object KrsDAO {
 
-  fun insertKrs(id_mhs: Int, id_matkul: Int, status: String, nilai: String): Int {
+  fun insertKrs(id_mhs: Int, id_matkul: Int, status: String, nilai: Int): Int {
     return transaction {
       Krs.insert {
         it[Krs.id_mhs] = id_mhs
@@ -53,19 +53,83 @@ object KrsDAO {
         .singleOrNull()
     }
   }
-  fun getKrsByIdMatkul(matkul: Int): KrsDTO? {
+
+  fun getKrsForMahasiswa(idMahasiswa: Int): List<Pair<MatkulDTO, Int?>> {
+    return transaction {
+      (Krs innerJoin Matakuliah)
+        .selectAll()
+        .where { Krs.id_mhs eq idMahasiswa }
+        .map {
+          val matkul = MatkulDTO(
+            id_matkul = it[Matakuliah.id_matkul],
+            id_dosen = it[Matakuliah.id_dosen],
+            kode_matkul = it[Matakuliah.kode_matkul],
+            nama_matkul = it[Matakuliah.nama_matkul],
+            sks = it[Matakuliah.sks]
+          )
+          val nilai = it[Krs.nilai]
+          matkul to nilai
+        }
+    }
+  }
+  
+  fun getMahasiswaInMatkul(dosenId:Int, idMatkul: Int): List<Pair<MahasiswaPublicDTO, MatkulDTO>> {
+    return transaction {
+      (Krs innerJoin Mahasiswa innerJoin Matakuliah)
+      .selectAll()
+      .where { (Matakuliah.id_dosen eq dosenId) and (Krs.id_matkul eq idMatkul) }
+      .map {
+          val mhs = MahasiswaPublicDTO(
+            id_mhs = it[Mahasiswa.id_mhs],
+            nim = it[Mahasiswa.nim],
+            nama = it[Mahasiswa.nama],
+            alamat = it[Mahasiswa.alamat]
+          )
+          val matkul = MatkulDTO(
+            id_matkul = it[Matakuliah.id_matkul],
+            id_dosen = it[Matakuliah.id_dosen],
+            kode_matkul = it[Matakuliah.kode_matkul],
+            nama_matkul = it[Matakuliah.nama_matkul],
+            sks = it[Matakuliah.sks]
+          )
+          mhs to matkul
+        }
+    }
+  }
+  
+  fun getMatkulDetailForMahasiswa(mahasiswaId: Int, matkulId: Int): Triple<MatkulDTO, DosenPublicDTO, Int?>? {
+    return transaction {
+      (Krs innerJoin Matakuliah innerJoin Dosen)
+        .selectAll()
+        .where {
+          (Krs.id_mhs eq mahasiswaId) and (Krs.id_matkul eq matkulId)
+        }
+        .map {
+            val matkul = MatkulDTO(
+              id_matkul = it[Matakuliah.id_matkul],
+              id_dosen = it[Matakuliah.id_dosen],
+              kode_matkul = it[Matakuliah.kode_matkul],
+              nama_matkul = it[Matakuliah.nama_matkul],
+              sks = it[Matakuliah.sks]
+            )
+            val dosen = DosenPublicDTO(
+              id_dosen = it[Dosen.id_dosen],
+              nama = it[Dosen.nama],
+              nidn = it[Dosen.nidn],
+              alamat = it[Dosen.alamat]
+            )
+            val nilai = it[Krs.nilai]
+            Triple(matkul, dosen, nilai)
+        }
+        .singleOrNull()
+    }
+  }
+
+  fun getNilai(mahasiswaId: Int, matkul: Int): Int? {
     return transaction {
       Krs.selectAll()
-        .where { Krs.id_matkul eq matkul }
-        .map {
-          KrsDTO(
-            id_krs = it[Krs.id_krs],
-            id_mhs = it[Krs.id_mhs],
-            id_matkul = it[Krs.id_matkul],
-            status = it[Krs.status],
-            nilai = it[Krs.nilai]
-          )
-        }
+        .where { (Krs.id_matkul eq matkul) and (Krs.id_mhs eq mahasiswaId) }
+        .map { it[Krs.nilai] }
         .singleOrNull()
     }
   }
@@ -74,10 +138,10 @@ object KrsDAO {
     return transaction { Krs.deleteWhere { Krs.id_krs eq id } > 0 }
   }
 
-  fun updateKrs(id: Int, nilai: String, status: String): Boolean {
+  fun updateKrs(id: Int, nilai: Int, status: String): Boolean {
     return transaction {
       Krs.update({ Krs.id_krs eq id }) {
-        it[Krs.nilai] = nilai
+        it[Krs.nilai] = nilai,
         it[Krs.status] = status
       } > 0
     }

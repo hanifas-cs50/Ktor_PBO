@@ -1,10 +1,10 @@
-package com.example.utils
+package utils
 
 import java.time.LocalDate
 import org.jetbrains.exposed.sql.*
 
 object NidnGenerator {
-  fun generateNim(): String {
+  fun generateNidn(): String {
     val year = LocalDate.now().year % 100 // e.g., 2025 → 25
     val code = "05"
 

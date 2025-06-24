@@ -29,6 +29,13 @@ object MahasiswaDAO {
     }
   }
 
+  fun countMahasiswa(): Long {
+    return transaction {
+      Mahasiswa.selectAll().count()
+    }
+  }
+
+
   fun getAllMahasiswa(): List<MahasiswaPublicDTO> {
     return transaction {
       Mahasiswa.selectAll().map {
@@ -42,21 +49,23 @@ object MahasiswaDAO {
     }
   }
 
-  fun getMahasiswaById(id: Int): MahasiswaPublicDTO? {
+  fun getMahasiswaById(id: Int): MahasiswaDTO? {
     return transaction {
       Mahasiswa.selectAll()
       .where { Mahasiswa.id_mhs eq id }
       .map {
-        MahasiswaPublicDTO(
+        MahasiswaDTO(
           id_mhs = it[Mahasiswa.id_mhs],
           nim = it[Mahasiswa.nim],
           nama = it[Mahasiswa.nama],
-          alamat = it[Mahasiswa.alamat]
+          alamat = it[Mahasiswa.alamat],
+          password = it[Mahasiswa.password]
         )
       }
       .singleOrNull()
     }
   }
+
   fun getMahasiswaByNim(nim: String): MahasiswaDTO? {
     return transaction {
       Mahasiswa.selectAll()
@@ -78,11 +87,14 @@ object MahasiswaDAO {
     return transaction { Mahasiswa.deleteWhere { Mahasiswa.id_mhs eq id } > 0 }
   }
 
-  fun updateMahasiswa(id: Int, nama: String, alamat: String): Boolean {
+  fun updateMahasiswa(id: Int, nama: String, alamat: String, password: String? = null): Boolean {
     return transaction {
       Mahasiswa.update({ Mahasiswa.id_mhs eq id }) {
         it[Mahasiswa.nama] = nama
         it[Mahasiswa.alamat] = alamat
+        if (!password.isNullOrBlank()) {
+          it[Mahasiswa.password] = password
+        }
       } > 0
     }
   }

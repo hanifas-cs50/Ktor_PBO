@@ -61,6 +61,6 @@ object Krs : Table() {
   val status = varchar("status", 20)
               .check { it inList listOf("Lulus", "Tidak Lulus", "Belum Dinilai") }
               .default("Belum Dinilai")
-  val nilai = varchar("nilai", 2).nullable()
+  val nilai = integer("nilai").nullable()
   override val primaryKey = PrimaryKey(id_krs)
 }

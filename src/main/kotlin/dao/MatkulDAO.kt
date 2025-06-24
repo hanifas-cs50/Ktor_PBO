@@ -23,6 +23,13 @@ object MatkulDAO {
     }
   }
 
+  fun countMatkul(): Long {
+    return transaction {
+      Matakuliah.selectAll().count()
+    }
+  }
+
+
   fun getAllMatkul(): List<MatkulDTO> {
     return transaction {
       Matakuliah.selectAll().map {
@@ -54,20 +61,20 @@ object MatkulDAO {
     }
   }
 
-  fun getMatkulByIdDosen(id: Int): MatkulDTO? {
+  fun getMatkulIdByDosenId(dosenId: Int): Int? {
     return transaction {
       Matakuliah.selectAll()
-        .where { Matakuliah.id_dosen eq id }
-        .map {
-          MatkulDTO(
-            id_matkul = it[Matakuliah.id_matkul],
-            id_dosen = it[Matakuliah.id_dosen],
-            kode_matkul = it[Matakuliah.kode_matkul],
-            nama_matkul = it[Matakuliah.nama_matkul],
-            sks = it[Matakuliah.sks]
-          )
-        }
+        .where { Matakuliah.id_dosen eq dosenId }
+        .map { it[Matakuliah.id_matkul] }
         .singleOrNull()
+    }
+  }
+
+  fun isMatkulOwnedByDosen(matkulId: Int, dosenId: Int): Boolean {
+    return transaction {
+        Matakuliah.selectAll()
+          .where { (Matakuliah.id_matkul eq matkulId) and (Matakuliah.id_dosen eq dosenId) }
+          .empty().not()  // returns true if a matching row exists
     }
   }
 
@@ -76,6 +83,8 @@ object MatkulDAO {
   }
 
   fun updateMatkul(id: Int, nama: String): Boolean {
-    return transaction { Matakuliah.update({ Matakuliah.id_matkul eq id }) { it[Matakuliah.nama_matkul] = nama } > 0 }
+    return transaction {
+      Matakuliah.update({ Matakuliah.id_matkul eq id }) { it[Matakuliah.nama_matkul] = nama } > 0
+    }
   }
 }

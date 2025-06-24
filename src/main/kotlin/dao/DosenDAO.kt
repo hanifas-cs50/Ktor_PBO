@@ -9,6 +9,7 @@ data class DosenDTO(
   val alamat: String,
   val password: String
 )
+
 data class DosenPublicDTO(
   val id_dosen: Int,
   val nidn: String,
@@ -29,6 +30,13 @@ object DosenDAO {
     }
   }
 
+  fun countDosen(): Long {
+    return transaction {
+      Dosen.selectAll().count()
+    }
+  }
+
+
   fun getAllDosen(): List<DosenPublicDTO> {
     return transaction {
       Dosen.selectAll().map {
@@ -39,6 +47,23 @@ object DosenDAO {
           alamat = it[Dosen.alamat]
         )
       }
+    }
+  }
+
+  fun getDosenById(id: Int): DosenDTO? {
+    return transaction {
+      Dosen.selectAll()
+      .where { Dosen.id_dosen eq id }
+      .map {
+        DosenDTO(
+          id_dosen = it[Dosen.id_dosen],
+          nidn = it[Dosen.nidn],
+          nama = it[Dosen.nama],
+          alamat = it[Dosen.alamat],
+          password = it[Dosen.password]
+        )
+      }
+      .singleOrNull()
     }
   }
 
@@ -63,10 +88,14 @@ object DosenDAO {
     return transaction { Dosen.deleteWhere { Dosen.id_dosen eq id } > 0 }
   }
 
-  fun updateDosen(id: Int, nama: String): Boolean {
+  fun updateDosen(id: Int, alamat: String, nama: String, password: String? = null): Boolean {
     return transaction {
       Dosen.update({ Dosen.id_dosen eq id }) {
         it[Dosen.nama] = nama
+        it[Dosen.alamat] = alamat
+        if (!password.isNullOrBlank()) {
+          it[Mahasiswa.password] = password
+        }
       } > 0
     }
   }

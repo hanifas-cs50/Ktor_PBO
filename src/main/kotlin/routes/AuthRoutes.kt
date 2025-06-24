@@ -1,7 +1,6 @@
-package com.example.routes
+package routes
 
-import com.example.UserSession
-import com.example.utils.NimGenerator
+import UserSession
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.html.*
@@ -11,6 +10,7 @@ import io.ktor.server.routing.*
 import io.ktor.server.sessions.*
 import kotlinx.html.*
 import org.jetbrains.exposed.sql.*
+import utils.NimGenerator
 
 fun Route.authRoutes() {
   get("/register/admin") {
@@ -55,11 +55,13 @@ fun Route.authRoutes() {
 
     val sliced = nim.substring(2, 4)
 
-    suspend fun respondLoginFailed(message: String = "NIM or password incorrect.") = call.respondHtml {
-      body {
-        h1 { +"Login Failed" }
-        p { +message }
-        a("/login") { +"Back to Login" }
+    suspend fun respondLoginFailed(message: String = "NIM or password incorrect.") {
+      call.respondHtml {
+        body {
+          h1 { +"Login Failed" }
+          p { +message }
+          a("/login") { +"Back to Login" }
+        }
       }
     }
 
@@ -73,7 +75,6 @@ fun Route.authRoutes() {
           false
         }
       }
-  
       sliced == "05" -> {
         val dosen = DosenDAO.getDosenByNidn(nim) ?: return@post respondLoginFailed()
         if (PasswordUtils.verify(password, dosen.password)) {
@@ -83,9 +84,8 @@ fun Route.authRoutes() {
           false
         }
       }
-  
-      // I want to return "Numbers only" even when password is wrong
       sliced.any { it.isLetter() } -> {
+        // I want to return "Numbers only" even when password is wrong
         val admin = AdminDAO.getAdminByUsername(nim) ?: return@post respondLoginFailed("Numbers only.")
         if (PasswordUtils.verify(password, admin.password)) {
           call.sessions.set(UserSession(nim, "admin", admin.nama))
@@ -94,14 +94,13 @@ fun Route.authRoutes() {
           false
         }
       }
-  
       else -> false
-    }  
+    }
 
     if (!isAuthenticated) return@post respondLoginFailed()
-    
+
     when {
-      sliced == "01" -> call.respondRedirect("/user")
+      sliced == "01" -> call.respondRedirect("/mahasiswa")
       sliced == "05" -> call.respondRedirect("/dosen")
       sliced.any { it.isLetter() } -> call.respondRedirect("/admin")
     }

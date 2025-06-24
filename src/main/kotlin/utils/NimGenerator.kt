@@ -1,4 +1,4 @@
-package com.example.utils
+package utils
 
 import java.time.LocalDate
 import org.jetbrains.exposed.sql.*

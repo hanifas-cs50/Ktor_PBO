@@ -8,6 +8,7 @@ data class AdminDTO(
   val nama: String,
   val password: String
 )
+
 data class AdminPublicDTO(
   val id_admin: Int,
   val username: String,
@@ -15,7 +16,6 @@ data class AdminPublicDTO(
 )
 
 object AdminDAO {
-
   fun insertAdmin(username: String, nama: String, password: String): Int {
     val hashedPassword = PasswordUtils.hash(password)
 
@@ -28,18 +28,22 @@ object AdminDAO {
     }
   }
 
-  fun getAllAdmin(): List<AdminPublicDTO> {
+  fun getAdminById(id: Int): AdminDTO? {
     return transaction {
-      Admin.selectAll().map {
-        AdminPublicDTO(
+      Admin.selectAll()
+      .where { Admin.id_admin eq id }
+      .map {
+        AdminDTO(
           id_admin = it[Admin.id_admin],
           username = it[Admin.username],
-          nama = it[Admin.nama]
+          nama = it[Admin.nama],
+          password = it[Admin.password]
         )
       }
+      .singleOrNull()
     }
   }
-
+    
   fun getAdminByUsername(username: String): AdminDTO? {
     return transaction {
       Admin.selectAll()
@@ -60,11 +64,26 @@ object AdminDAO {
     return transaction { Admin.deleteWhere { Admin.id_admin eq id } > 0 }
   }
 
-  fun updateAdmin(id: Int, nama: String): Boolean {
+  fun updateAdmin(id: Int, nama: String, password: String): Boolean {
+    val hashedPassword = PasswordUtils.hash(password)
+
     return transaction {
       Admin.update({ Admin.id_admin eq id }) {
         it[Admin.nama] = nama
+        it[Admin.password] = hashedPassword
       } > 0
     }
   }
 }
+
+// fun getAllAdmin(): List<AdminPublicDTO> {
+//   return transaction {
+//     Admin.selectAll().map {
+//       AdminPublicDTO(
+//         id_admin = it[Admin.id_admin],
+//         username = it[Admin.username],
+//         nama = it[Admin.nama]
+//       )
+//     }
+//   }
+// }
