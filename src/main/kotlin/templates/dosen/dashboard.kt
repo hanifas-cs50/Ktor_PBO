@@ -1,8 +1,8 @@
-package templates.dosen
+package com.example.templates.dosen
 
-import MahasiswaPublicDTO
-import MatkulDTO
-import UserSession
+import com.example.UserSession
+import com.example.dao.MahasiswaPublicDTO
+import com.example.dao.MatkulDTO
 import kotlinx.html.*
 
 fun HTML.dashboard(dosen: UserSession, mahasiswaMatkul: List<Pair<MahasiswaPublicDTO, MatkulDTO>>) {

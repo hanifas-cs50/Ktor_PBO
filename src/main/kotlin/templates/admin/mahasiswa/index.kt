@@ -1,11 +1,14 @@
-package templates.admin.mahasiswa
+package com.example.templates.admin.mahasiswa
 
-import MahasiswaPublicDTO
+import com.example.dao.MahasiswaPublicDTO
+import com.example.templates.components.adminNavbar
 import kotlinx.html.*
 
 fun HTML.index(list: List<MahasiswaPublicDTO>) {
   head { title { +"Data Mahasiswa" } }
   body {
+    adminNavbar()
+    
     h1 { +"Data Mahasiswa" }
     a("/admin/mhs/add") { +"+ Tambah Mahasiswa" }
     table {

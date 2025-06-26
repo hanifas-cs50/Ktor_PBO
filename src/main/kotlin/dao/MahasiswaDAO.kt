@@ -1,19 +1,23 @@
+package com.example.dao
+
+import com.example.utils.Mahasiswa
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.transactions.transaction
 
 data class MahasiswaDTO(
-  val id_mhs: Int,
-  val nim: String,
-  val nama: String,
-  val alamat: String,
-  val password: String
+        val id_mhs: Int,
+        val nim: String,
+        val nama: String,
+        val alamat: String,
+        val password: String
 )
+
 data class MahasiswaPublicDTO(
-  val id_mhs: Int,
-  val nim: String,
-  val nama: String,
-  val alamat: String
+        val id_mhs: Int,
+        val nim: String,
+        val nama: String,
+        val alamat: String
 )
 
 object MahasiswaDAO {
@@ -30,20 +34,17 @@ object MahasiswaDAO {
   }
 
   fun countMahasiswa(): Long {
-    return transaction {
-      Mahasiswa.selectAll().count()
-    }
+    return transaction { Mahasiswa.selectAll().count() }
   }
-
 
   fun getAllMahasiswa(): List<MahasiswaPublicDTO> {
     return transaction {
       Mahasiswa.selectAll().map {
         MahasiswaPublicDTO(
-          id_mhs = it[Mahasiswa.id_mhs],
-          nim = it[Mahasiswa.nim],
-          nama = it[Mahasiswa.nama],
-          alamat = it[Mahasiswa.alamat]
+                id_mhs = it[Mahasiswa.id_mhs],
+                nim = it[Mahasiswa.nim],
+                nama = it[Mahasiswa.nama],
+                alamat = it[Mahasiswa.alamat]
         )
       }
     }
@@ -52,34 +53,34 @@ object MahasiswaDAO {
   fun getMahasiswaById(id: Int): MahasiswaDTO? {
     return transaction {
       Mahasiswa.selectAll()
-      .where { Mahasiswa.id_mhs eq id }
-      .map {
-        MahasiswaDTO(
-          id_mhs = it[Mahasiswa.id_mhs],
-          nim = it[Mahasiswa.nim],
-          nama = it[Mahasiswa.nama],
-          alamat = it[Mahasiswa.alamat],
-          password = it[Mahasiswa.password]
-        )
-      }
-      .singleOrNull()
+              .where { Mahasiswa.id_mhs eq id }
+              .map {
+                MahasiswaDTO(
+                        id_mhs = it[Mahasiswa.id_mhs],
+                        nim = it[Mahasiswa.nim],
+                        nama = it[Mahasiswa.nama],
+                        alamat = it[Mahasiswa.alamat],
+                        password = it[Mahasiswa.password]
+                )
+              }
+              .singleOrNull()
     }
   }
 
   fun getMahasiswaByNim(nim: String): MahasiswaDTO? {
     return transaction {
       Mahasiswa.selectAll()
-        .where { Mahasiswa.nim eq nim }
-        .map {
-          MahasiswaDTO(
-            id_mhs = it[Mahasiswa.id_mhs],
-            nim = it[Mahasiswa.nim],
-            nama = it[Mahasiswa.nama],
-            alamat = it[Mahasiswa.alamat],
-            password = it[Mahasiswa.password]
-          )
-        }
-        .singleOrNull()
+              .where { Mahasiswa.nim eq nim }
+              .map {
+                MahasiswaDTO(
+                        id_mhs = it[Mahasiswa.id_mhs],
+                        nim = it[Mahasiswa.nim],
+                        nama = it[Mahasiswa.nama],
+                        alamat = it[Mahasiswa.alamat],
+                        password = it[Mahasiswa.password]
+                )
+              }
+              .singleOrNull()
     }
   }
 

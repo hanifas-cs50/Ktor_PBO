@@ -1,8 +1,8 @@
-package templates.admin
+package com.example.templates.admin
 
-import UserSession
+import com.example.UserSession
+import com.example.templates.components.adminNavbar
 import kotlinx.html.*
-import templates.components.adminNavbar
 
 fun HTML.adminDashboard(session: UserSession, mhsCount: Int, dosenCount: Int, matkulCount: Int) {
   head { title { +"Admin Dashboard" } }

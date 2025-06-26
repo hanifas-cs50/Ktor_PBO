@@ -1,20 +1,23 @@
+package com.example.dao
+
+import com.example.utils.Dosen
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.transactions.transaction
 
 data class DosenDTO(
-  val id_dosen: Int,
-  val nidn: String,
-  val nama: String,
-  val alamat: String,
-  val password: String
+        val id_dosen: Int,
+        val nidn: String,
+        val nama: String,
+        val alamat: String,
+        val password: String
 )
 
 data class DosenPublicDTO(
-  val id_dosen: Int,
-  val nidn: String,
-  val nama: String,
-  val alamat: String
+        val id_dosen: Int,
+        val nidn: String,
+        val nama: String,
+        val alamat: String
 )
 
 object DosenDAO {
@@ -31,20 +34,17 @@ object DosenDAO {
   }
 
   fun countDosen(): Long {
-    return transaction {
-      Dosen.selectAll().count()
-    }
+    return transaction { Dosen.selectAll().count() }
   }
-
 
   fun getAllDosen(): List<DosenPublicDTO> {
     return transaction {
       Dosen.selectAll().map {
         DosenPublicDTO(
-          id_dosen = it[Dosen.id_dosen],
-          nidn = it[Dosen.nidn],
-          nama = it[Dosen.nama],
-          alamat = it[Dosen.alamat]
+                id_dosen = it[Dosen.id_dosen],
+                nidn = it[Dosen.nidn],
+                nama = it[Dosen.nama],
+                alamat = it[Dosen.alamat]
         )
       }
     }
@@ -53,34 +53,34 @@ object DosenDAO {
   fun getDosenById(id: Int): DosenDTO? {
     return transaction {
       Dosen.selectAll()
-      .where { Dosen.id_dosen eq id }
-      .map {
-        DosenDTO(
-          id_dosen = it[Dosen.id_dosen],
-          nidn = it[Dosen.nidn],
-          nama = it[Dosen.nama],
-          alamat = it[Dosen.alamat],
-          password = it[Dosen.password]
-        )
-      }
-      .singleOrNull()
+              .where { Dosen.id_dosen eq id }
+              .map {
+                DosenDTO(
+                        id_dosen = it[Dosen.id_dosen],
+                        nidn = it[Dosen.nidn],
+                        nama = it[Dosen.nama],
+                        alamat = it[Dosen.alamat],
+                        password = it[Dosen.password]
+                )
+              }
+              .singleOrNull()
     }
   }
 
   fun getDosenByNidn(nidn: String): DosenDTO? {
     return transaction {
       Dosen.selectAll()
-      .where { Dosen.nidn eq nidn }
-      .map {
-        DosenDTO(
-          id_dosen = it[Dosen.id_dosen],
-          nidn = it[Dosen.nidn],
-          nama = it[Dosen.nama],
-          alamat = it[Dosen.alamat],
-          password = it[Dosen.password]
-        )
-      }
-      .singleOrNull()
+              .where { Dosen.nidn eq nidn }
+              .map {
+                DosenDTO(
+                        id_dosen = it[Dosen.id_dosen],
+                        nidn = it[Dosen.nidn],
+                        nama = it[Dosen.nama],
+                        alamat = it[Dosen.alamat],
+                        password = it[Dosen.password]
+                )
+              }
+              .singleOrNull()
     }
   }
 
@@ -94,7 +94,7 @@ object DosenDAO {
         it[Dosen.nama] = nama
         it[Dosen.alamat] = alamat
         if (!password.isNullOrBlank()) {
-          it[Mahasiswa.password] = password
+          it[Dosen.password] = password
         }
       } > 0
     }

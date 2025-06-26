@@ -1,4 +1,7 @@
-import routes.configureRouting
+package com.example
+
+import com.example.routes.configureRouting
+import com.example.utils.Database
 import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.server.sessions.*
@@ -15,7 +18,7 @@ fun Application.module() {
     cookie<UserSession>("user_session") {
       cookie.path = "/"
       cookie.maxAgeInSeconds = 3600
-      // cookie.httpOnly = true // Prevent JavaScript access (XSS protection)
+      cookie.httpOnly = true // Prevent JavaScript access (XSS protection)
     }
   }
   Database.init()

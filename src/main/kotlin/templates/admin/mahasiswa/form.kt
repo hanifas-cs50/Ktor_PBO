@@ -1,11 +1,14 @@
-package templates.admin.mahasiswa
+package com.example.templates.admin.mahasiswa
 
-import MahasiswaDTO
+import com.example.dao.MahasiswaDTO
+import com.example.templates.components.adminNavbar
 import kotlinx.html.*
 
 fun HTML.form(mhs: MahasiswaDTO? = null) {
   head { title { +if (mhs == null) "Tambah Mahasiswa" else "Edit Mahasiswa" } }
   body {
+    adminNavbar()
+    
     h1 { +if (mhs == null) "Tambah Mahasiswa" else "Edit Mahasiswa" }
 
     form(
@@ -32,10 +35,12 @@ fun HTML.form(mhs: MahasiswaDTO? = null) {
           +mhs?.alamat.orEmpty()
         }
       }
-      p {
-        label { +"Password: " }
-        passwordInput(name = "password") {
-          placeholder = if (mhs == null) "Masukkan password" else "Biarkan kosong jika tidak diubah"
+      if (mhs != null) {
+        p {
+          label { +"Password: " }
+          passwordInput(name = "password") {
+            placeholder = "Biarkan kosong jika tidak diubah"
+          }
         }
       }
       p { submitInput { value = if (mhs == null) "Tambah" else "Update" } }

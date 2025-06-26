@@ -1,11 +1,14 @@
-package templates.admin.dosen
+package com.example.templates.admin.dosen
 
-import DosenPublicDTO
+import com.example.dao.DosenPublicDTO
+import com.example.templates.components.adminNavbar
 import kotlinx.html.*
 
 fun HTML.index(list: List<DosenPublicDTO>) {
   head { title { +"Data Dosen" } }
   body {
+    adminNavbar()
+
     h1 { +"Data Dosen" }
     a("/admin/dosen/add") { +"+ Tambah Dosen" }
     table {

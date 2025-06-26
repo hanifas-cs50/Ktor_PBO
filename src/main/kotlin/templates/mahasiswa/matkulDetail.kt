@@ -1,8 +1,8 @@
-package templates.mahasiswa
+package com.example.templates.mahasiswa
 
-import UserSession
-import MatkulDTO
-impoer DosenPublicDTO
+import com.example.UserSession
+import com.example.dao.MatkulDTO
+import com.example.dao.DosenPublicDTO
 import kotlinx.html.*
 
 fun HTML.matkulDetail(session: UserSession, matkul: MatkulDTO, dosen: DosenPublicDTO, nilai: Int?) {
@@ -31,7 +31,7 @@ fun HTML.matkulDetail(session: UserSession, matkul: MatkulDTO, dosen: DosenPubli
             }
             tr {
                 th { +"Nilai" }
-                td { +(nilai ?: "Belum dinilai") }
+                td { +(nilai?.toString() ?: "Belum dinilai") }
             }
         }
 

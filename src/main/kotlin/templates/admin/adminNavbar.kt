@@ -1,4 +1,4 @@
-package templates.components
+package com.example.templates.components
 
 import kotlinx.html.*
 
@@ -16,5 +16,6 @@ fun FlowContent.adminNavbar() {
     a("/admin/dosen") { +"Dosen" }
     a("/admin/matkul") { +"Matakuliah" }
     a("/admin/account") { +"Account" }
+    a("/logout") { +"Logout" }
   }
 }

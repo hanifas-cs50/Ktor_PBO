@@ -1,11 +1,14 @@
-package templates.admin
+package com.example.templates.admin
 
-import AdminDTO
+import com.example.dao.AdminDTO
+import com.example.templates.components.adminNavbar
 import kotlinx.html.*
 
 fun HTML.adminForm(admin: AdminDTO) {
   head { title { +"Edit Admin" } }
   body {
+    adminNavbar()
+
     h1 { +"Edit Admin" }
     form(action = "/admin/account/${admin.id_admin}", method = FormMethod.post) {
       p {

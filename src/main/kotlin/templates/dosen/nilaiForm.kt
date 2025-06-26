@@ -1,10 +1,10 @@
-package templates.dosen
+package com.example.templates.dosen
 
-import MahasiswaPublicDTO
-import MatkulDTO
+import com.example.dao.MahasiswaDTO
+import com.example.dao.MatkulDTO
 import kotlinx.html.*
 
-fun HTML.nilaiForm(mahasiswa: MahasiswaPublicDTO, matkul: MatkulDTO, nilai: Int?) {
+fun HTML.nilaiForm(mahasiswa: MahasiswaDTO, matkul: MatkulDTO, nilai: Int?) {
   head { title { +"Input Nilai" } }
   body {
     h1 { +"Input Nilai untuk ${mahasiswa.nama} - ${matkul.nama_matkul}" }

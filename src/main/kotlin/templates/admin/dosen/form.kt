@@ -1,6 +1,7 @@
-package templates.admin.dosen
+package com.example.templates.admin.dosen
 
-import DosenDTO
+import com.example.dao.DosenDTO
+import com.example.templates.components.adminNavbar
 import kotlinx.html.*
 
 fun HTML.form(dosen: DosenDTO? = null) {
@@ -34,10 +35,12 @@ fun HTML.form(dosen: DosenDTO? = null) {
           +dosen?.alamat.orEmpty()
         }
       }
-      p {
-        label { +"Password: " }
-        passwordInput(name = "password") {
-          placeholder = if (dosen == null) "Masukkan password" else "Biarkan kosong jika tidak diubah"
+      if (dosen != null) {
+        p {
+          label { +"Password: " }
+          passwordInput(name = "password") {
+            placeholder = "Biarkan kosong jika tidak diubah"
+          }
         }
       }
       p { submitInput { value = if (dosen == null) "Tambah" else "Update" } }

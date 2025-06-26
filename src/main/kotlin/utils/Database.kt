@@ -1,3 +1,5 @@
+package com.example.utils
+
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils.create
@@ -6,9 +8,7 @@ import org.jetbrains.exposed.sql.transactions.transaction
 object Database {
   fun init() {
     Database.connect("jdbc:sqlite:data.db", driver = "org.sqlite.JDBC")
-    transaction {
-      SchemaUtils.create(Admin, Mahasiswa, Dosen, Matakuliah, Krs)
-    }
+    transaction { SchemaUtils.create(Admin, Mahasiswa, Dosen, Matakuliah, Dosen_Bimbing, Krs) }
   }
 }
 
@@ -58,9 +58,10 @@ object Krs : Table() {
   val id_krs = integer("id_krs").autoIncrement()
   val id_mhs = integer("id_mhs").references(Mahasiswa.id_mhs)
   val id_matkul = integer("id_matkul").references(Matakuliah.id_matkul)
-  val status = varchar("status", 20)
-              .check { it inList listOf("Lulus", "Tidak Lulus", "Belum Dinilai") }
-              .default("Belum Dinilai")
+  val status =
+          varchar("status", 20)
+                  .check { it inList listOf("Lulus", "Tidak Lulus", "Belum Dinilai") }
+                  .default("Belum Dinilai")
   val nilai = integer("nilai").nullable()
   override val primaryKey = PrimaryKey(id_krs)
 }
