@@ -27,7 +27,7 @@ fun Application.configureRouting() {
       if (session == null) {
         call.respondHtml { guestIndex() }
       } else {
-        call.respondHtml { guestIndex(session.userId) }
+        call.respondHtml { guestIndex(session.username) }
       }
     }
 

@@ -5,17 +5,26 @@ import kotlinx.html.*
 fun HTML.login() {
   head { title { +"Login" } }
   body {
-    h1 { +"Login" }
-    form(action = "/login", method = FormMethod.post) {
-      p {
-        +"NIM:"
-        textInput(name = "nim")
+      h1 { +"Login" }
+
+      form(action = "/login", method = FormMethod.post) {
+          p {
+              +"NIM:"
+              textInput { name = "nim" }
+          }
+          p {
+              +"Password:"
+              passwordInput { name = "password" }
+          }
+          p {
+              submitInput { value = "Login" }
+          }
       }
+
       p {
-        +"Password:"
-        passwordInput(name = "password")
+          a("/") { +"Kembali ke Beranda" }
+          +" | "
+          a("/register") { +"Register Mahasiswa" }
       }
-      p { submitInput { value = "Login" } }
-    }
   }
 }

@@ -3,34 +3,31 @@ package com.example.templates.auth
 import kotlinx.html.*
 
 fun HTML.register() {
-  head { title { +"Register" } }
-
+  head { title { +"Register Mahasiswa" } }
   body {
-    h1 { +"Register" }
-    form(action = "/register", method = FormMethod.post) {
-      p {
-        +"Nama:"
-        textInput {
-          name = "nama"
-          required = true
-        }
+      h1 { +"Register Mahasiswa" }
+
+      form(action = "/register", method = FormMethod.post) {
+          p {
+              +"Nama:"
+              textInput { name = "nama" }
+          }
+          p {
+              +"Alamat:"
+              textArea { name = "alamat" }
+          }
+          p {
+              +"Password:"
+              passwordInput { name = "password" }
+          }
+          p {
+              submitInput { value = "Register" }
+          }
       }
+
       p {
-        +"Alamat:"
-        textArea {
-          name = "alamat"
-          rows = "5"
-          required = true
-        }
+          a("/login") { +"Kembali ke Login" }
       }
-      p {
-        +"Password:"
-        passwordInput {
-          name = "password"
-          required = true
-        }
-      }
-      p { submitInput { value = "Register" } }
-    }
   }
 }
+

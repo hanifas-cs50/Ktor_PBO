@@ -7,7 +7,13 @@ import io.ktor.server.response.*
 import io.ktor.server.sessions.*
 import kotlinx.serialization.Serializable
 
-@Serializable data class UserSession(val userId: String, val role: String, val name: String)
+@Serializable
+data class UserSession(
+    val userId: Int,
+    val username: String,
+    val name: String,
+    val role: String
+)
 
 fun main(args: Array<String>) {
   io.ktor.server.netty.EngineMain.main(args)

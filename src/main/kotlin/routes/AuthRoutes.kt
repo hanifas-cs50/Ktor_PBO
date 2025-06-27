@@ -83,10 +83,10 @@ fun Route.authRoutes() {
 
   post("/login") {
     val params = call.receiveParameters()
-    val nim = params["nim"] ?: return@post call.respond(HttpStatusCode.BadRequest, "Missing NIM")
+    val username = params["nim"] ?: return@post call.respond(HttpStatusCode.BadRequest, "Missing NIM")
     val password = params["password"] ?: return@post call.respond(HttpStatusCode.BadRequest, "Missing Password")
 
-    suspend fun showLoginFailed(message: String = "NIM or password incorrect.") {
+    suspend fun showLoginFailed(message: String = "Username or password incorrect.") {
       call.respondHtml {
         body {
           h1 { +"Login Failed" }
@@ -96,32 +96,48 @@ fun Route.authRoutes() {
       }
     }
 
-    val roleHint = nim.substring(2, 4)
-    val roleLetter = nim.any { it.isLetter() }
-
-    if (roleLetter) {
-      val admin = AdminDAO.getAdminByUsername(nim)
-      if (admin == null) return@post showLoginFailed("Numbers only.")
-      if (!PasswordUtils.verify(password, admin.password)) return@post showLoginFailed()
-      call.sessions.set(UserSession(admin.id_admin.toString(), "admin", admin.nama))
-      return@post call.respondRedirect("/admin")
+    when {
+      username.any { it.isLetter() } -> {
+        val admin = AdminDAO.getAdminByUsername(username) ?: return@post showLoginFailed("Numbers only.")
+        if (!PasswordUtils.verify(password, admin.password)) return@post showLoginFailed()
+        call.sessions.set(
+                UserSession(
+                        userId = admin.id_admin,
+                        username = admin.username,
+                        name = admin.nama,
+                        role = "admin"
+                )
+        )
+        call.respondRedirect("/admin")
+      }
+      username.startsWith("01") || username.substring(2, 4) == "01" -> {
+        val mhs = MahasiswaDAO.getMahasiswaByNim(username) ?: return@post showLoginFailed()
+        if (!PasswordUtils.verify(password, mhs.password)) return@post showLoginFailed()
+        call.sessions.set(
+                UserSession(
+                        userId = mhs.id_mhs,
+                        username = mhs.nim,
+                        name = mhs.nama,
+                        role = "mahasiswa"
+                )
+        )
+        call.respondRedirect("/mahasiswa")
+      }
+      username.startsWith("05") || username.substring(2, 4) == "05" -> {
+        val dosen = DosenDAO.getDosenByNidn(username) ?: return@post showLoginFailed()
+        if (!PasswordUtils.verify(password, dosen.password)) return@post showLoginFailed()
+        call.sessions.set(
+                UserSession(
+                        userId = dosen.id_dosen,
+                        username = dosen.nidn,
+                        name = dosen.nama,
+                        role = "dosen"
+                )
+        )
+        call.respondRedirect("/dosen")
+      }
+      else -> showLoginFailed()
     }
-
-    if (roleHint == "01") {
-      val mhs = MahasiswaDAO.getMahasiswaByNim(nim) ?: return@post showLoginFailed()
-      if (!PasswordUtils.verify(password, mhs.password)) return@post showLoginFailed()
-      call.sessions.set(UserSession(nim, "mahasiswa", mhs.nama))
-      return@post call.respondRedirect("/mahasiswa")
-    }
-
-    if (roleHint == "05") {
-      val dosen = DosenDAO.getDosenByNidn(nim) ?: return@post showLoginFailed()
-      if (!PasswordUtils.verify(password, dosen.password)) return@post showLoginFailed()
-      call.sessions.set(UserSession(nim, "dosen", dosen.nama))
-      return@post call.respondRedirect("/dosen")
-    }
-
-    showLoginFailed()
   }
 
   get("/logout") {

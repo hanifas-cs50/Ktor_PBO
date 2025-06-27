@@ -8,8 +8,8 @@ import com.example.templates.admin.dosen.form as dosenForm
 import com.example.templates.admin.dosen.index as dosenIndex
 import com.example.templates.admin.mahasiswa.form as mahasiswaForm
 import com.example.templates.admin.mahasiswa.index as mahasiswaIndex
-import com.example.templates.admin.matkul.index as matkulIndex
 import com.example.templates.admin.matkul.form as matkulForm
+import com.example.templates.admin.matkul.index as matkulIndex
 import com.example.utils.*
 import io.ktor.http.*
 import io.ktor.server.application.*
@@ -21,12 +21,18 @@ import io.ktor.server.sessions.*
 import kotlinx.html.*
 
 fun Route.adminRoutes() {
-  get {
-    val session = call.sessions.get<UserSession>()
-    if (session == null) {
-      call.respondRedirect("/login")
-      return@get
+
+  suspend fun ApplicationCall.requireSession(): UserSession? {
+    val session = sessions.get<UserSession>()
+    if (session == null || session.role != "admin") {
+      respondRedirect("/login")
+      return null
     }
+    return session
+  }
+
+  get {
+    val session = call.requireSession() ?: return@get
 
     val mhsCount = MahasiswaDAO.countMahasiswa().toInt()
     val dosenCount = DosenDAO.countDosen().toInt()
@@ -36,13 +42,9 @@ fun Route.adminRoutes() {
   }
 
   get("/account") {
-    val session = call.sessions.get<UserSession>()
-    if (session == null) {
-      call.respondRedirect("/login")
-      return@get
-    }
+    val session = call.requireSession() ?: return@get
 
-    val admin = AdminDAO.getAdminById(session.userId.toInt())
+    val admin = AdminDAO.getAdminById(session.userId)
     if (admin == null) {
       call.respond(HttpStatusCode.NotFound, "Admin not found")
       return@get
@@ -52,9 +54,15 @@ fun Route.adminRoutes() {
   }
 
   post("/account/{id}") {
-    val id = call.parameters["id"]?.toIntOrNull() ?: return@post call.respondText("Invalid ID")
+    val session = call.requireSession() ?: return@post
 
+    val id = call.parameters["id"]?.toIntOrNull() ?: return@post call.respondText("Invalid ID")
     val params = call.receiveParameters()
+
+    if (id != session.userId) {
+      return@post call.respondText("Incorrect ID") 
+    }
+
     val nama = params["nama"] ?: return@post call.respondText("Missing nama")
     val password = params["password"] ?: return@post call.respondText("Missing password")
 
@@ -63,6 +71,8 @@ fun Route.adminRoutes() {
   }
 
   get("/delete/{id}") {
+    call.requireSession() ?: return@get
+
     val id = call.parameters["id"]?.toIntOrNull() ?: return@get call.respondText("Invalid ID")
     AdminDAO.deleteAdmin(id)
     call.sessions.clear<UserSession>()
@@ -71,16 +81,23 @@ fun Route.adminRoutes() {
 
   route("/mhs") {
     get {
+      call.requireSession() ?: return@get
+
       val list = MahasiswaDAO.getAllMahasiswa()
       call.respondHtml { mahasiswaIndex(list) }
     }
 
-    get("/add") { call.respondHtml { mahasiswaForm() } }
+    get("/add") {
+      call.requireSession() ?: return@get
+      call.respondHtml { mahasiswaForm() }
+    }
 
     post("/add") {
+      call.requireSession() ?: return@post
+
       val params = call.receiveParameters()
-      val nama = params["nama"] ?: return@post call.respondText("Missing nama", status = HttpStatusCode.BadRequest)
-      val alamat = params["alamat"] ?: return@post call.respondText("Missing alamat", status = HttpStatusCode.BadRequest)
+      val nama = params["nama"] ?: return@post call.respondText("Missing nama")
+      val alamat = params["alamat"] ?: return@post call.respondText("Missing alamat")
 
       val nim = NimGenerator.generateNim()
       val hashedPassword = PasswordUtils.hash(nim)
@@ -90,6 +107,8 @@ fun Route.adminRoutes() {
     }
 
     get("/edit/{id}") {
+      call.requireSession() ?: return@get
+
       val id = call.parameters["id"]?.toIntOrNull()
       val mhs = id?.let { MahasiswaDAO.getMahasiswaById(it) }
       if (mhs == null) return@get call.respondText("Mahasiswa not found")
@@ -97,9 +116,11 @@ fun Route.adminRoutes() {
     }
 
     post("/edit/{id}") {
+      call.requireSession() ?: return@post
+
       val id = call.parameters["id"]?.toIntOrNull() ?: return@post call.respondText("Invalid ID")
       val params = call.receiveParameters()
-      val nama = params["nama"] ?: return@post call.respondText("Missing Nama")
+      val nama = params["nama"] ?: return@post call.respondText("Missing nama")
       val alamat = params["alamat"] ?: return@post call.respondText("Missing alamat")
       val password = params["password"]
 
@@ -114,6 +135,8 @@ fun Route.adminRoutes() {
     }
 
     get("/delete/{id}") {
+      call.requireSession() ?: return@get
+
       val id = call.parameters["id"]?.toIntOrNull() ?: return@get call.respondText("Invalid ID")
       MahasiswaDAO.deleteMahasiswa(id)
       call.respondRedirect("/admin/mhs")
@@ -122,13 +145,20 @@ fun Route.adminRoutes() {
 
   route("/dosen") {
     get {
+      call.requireSession() ?: return@get
+
       val list = DosenDAO.getAllDosen()
       call.respondHtml { dosenIndex(list) }
     }
 
-    get("/add") { call.respondHtml { dosenForm() } }
+    get("/add") {
+      call.requireSession() ?: return@get
+      call.respondHtml { dosenForm() }
+    }
 
     post("/add") {
+      call.requireSession() ?: return@post
+
       val params = call.receiveParameters()
       val nama = params["nama"] ?: return@post call.respondText("Missing nama")
       val alamat = params["alamat"] ?: return@post call.respondText("Missing alamat")
@@ -141,6 +171,8 @@ fun Route.adminRoutes() {
     }
 
     get("/edit/{id}") {
+      call.requireSession() ?: return@get
+
       val id = call.parameters["id"]?.toIntOrNull()
       val dosen = id?.let { DosenDAO.getDosenById(it) }
       if (dosen == null) return@get call.respondText("Dosen not found")
@@ -148,6 +180,8 @@ fun Route.adminRoutes() {
     }
 
     post("/edit/{id}") {
+      call.requireSession() ?: return@post
+
       val id = call.parameters["id"]?.toIntOrNull() ?: return@post call.respondText("Invalid ID")
       val params = call.receiveParameters()
       val nama = params["nama"] ?: return@post call.respondText("Missing nama")
@@ -165,6 +199,8 @@ fun Route.adminRoutes() {
     }
 
     get("/delete/{id}") {
+      call.requireSession() ?: return@get
+
       val id = call.parameters["id"]?.toIntOrNull() ?: return@get call.respondText("Invalid ID")
       DosenDAO.deleteDosen(id)
       call.respondRedirect("/admin/dosen")
@@ -173,27 +209,35 @@ fun Route.adminRoutes() {
 
   route("/matkul") {
     get {
+      call.requireSession() ?: return@get
+
       val list = MatkulDAO.getAllMatkulWithDosenName()
       call.respondHtml { matkulIndex(list) }
     }
 
     get("/add") {
+      call.requireSession() ?: return@get
+
       val dosenList = DosenDAO.getAllDosen()
       call.respondHtml { matkulForm(dosenList = dosenList) }
     }
 
     post("/add") {
+      call.requireSession() ?: return@post
+
       val params = call.receiveParameters()
       val kode = params["kode"] ?: return@post call.respondText("Missing kode")
       val nama = params["nama"] ?: return@post call.respondText("Missing nama")
       val sks = params["sks"]?.toIntOrNull() ?: return@post call.respondText("Invalid sks")
-      val dosenId =
-              params["id_dosen"]?.toIntOrNull() ?: return@post call.respondText("Invalid dosen ID")
+      val dosenId = params["id_dosen"]?.toIntOrNull() ?: return@post call.respondText("Invalid dosen ID")
+
       MatkulDAO.insertMatkul(dosenId, kode, nama, sks)
       call.respondRedirect("/admin/matkul")
     }
 
     get("/edit/{id}") {
+      call.requireSession() ?: return@get
+
       val id = call.parameters["id"]?.toIntOrNull()
       val matkul = id?.let { MatkulDAO.getMatkulById(it) }
       val dosenList = DosenDAO.getAllDosen()
@@ -202,17 +246,21 @@ fun Route.adminRoutes() {
     }
 
     post("/edit/{id}") {
+      call.requireSession() ?: return@post
+
       val id = call.parameters["id"]?.toIntOrNull() ?: return@post call.respondText("Invalid ID")
       val params = call.receiveParameters()
       val nama = params["nama"] ?: return@post call.respondText("Missing nama")
       val sks = params["sks"]?.toIntOrNull() ?: return@post call.respondText("Invalid sks")
-      val dosenId =
-              params["id_dosen"]?.toIntOrNull() ?: return@post call.respondText("Invalid dosen ID")
+      val dosenId = params["id_dosen"]?.toIntOrNull() ?: return@post call.respondText("Invalid dosen ID")
+
       MatkulDAO.updateMatkul(id, nama, sks, dosenId)
       call.respondRedirect("/admin/matkul")
     }
 
     get("/delete/{id}") {
+      call.requireSession() ?: return@get
+
       val id = call.parameters["id"]?.toIntOrNull() ?: return@get call.respondText("Invalid ID")
       MatkulDAO.deleteMatkul(id)
       call.respondRedirect("/admin/matkul")

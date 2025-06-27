@@ -5,7 +5,12 @@ import kotlinx.html.*
 fun HTML.guestIndex(userId: String? = null) {
   head { title { +"Welcome" } }
   body {
-    h1 { +if (userId == null) "Hello World" else "Welcome, ${userId}" }
+    h1 { 
+      style = """
+        padding: 1rem;
+      """.trimIndent()
+      +if (userId == null) "Hello World" else "Welcome, ${userId}"
+    }
 
     div {
       style = """
