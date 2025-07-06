@@ -3,26 +3,31 @@ package com.example.templates
 import kotlinx.html.*
 
 fun HTML.guestIndex(userId: String? = null) {
-  head { title { +"Welcome" } }
+  head { title { +"Welcome" } 
+        link(rel = "stylesheet", href = "/static/style.css", type = "text/css")
+        }
   body {
     h1 { 
-      style = """
-        padding: 1rem;
-      """.trimIndent()
+      classes = setOf("heading")
       +if (userId == null) "Hello World" else "Welcome, ${userId}"
     }
 
     div {
-      style = """
-        display: flex;
-        gap: 1rem;
-        padding: 1rem;
-        margin-bottom: 1rem;
-      """.trimIndent()
+      classes = setOf("link-container")
   
-      a("/login") { +"Login" }
-      a("/register") { +"Register" }
-      a("/register/admin") { +"Register Admin" }
+      a("/login") { 
+        classes = setOf("nav-link")
+        +"Login" }
+      a("/register") { 
+        classes = setOf("nav-link")
+        +"Register" }
+      a("/register/admin") { 
+        classes = setOf("nav-link")
+        +"Register Admin" }
+    }
+
+    footer {
+      + "© 2025 Sistem Rencana Studi - Ktor_PBO."
     }
   }
 }
