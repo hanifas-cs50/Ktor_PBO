@@ -3,19 +3,12 @@ package com.example.templates.components
 import kotlinx.html.*
 
 fun FlowContent.adminNavbar() {
-  nav {
-    style = """
-      display: flex;
-      gap: 1rem;
-      padding: 1rem;
-      margin-bottom: 1rem;
-    """.trimIndent()
-
-    a("/admin") { +"Dashboard" }
-    a("/admin/mhs") { +"Mahasiswa" }
-    a("/admin/dosen") { +"Dosen" }
-    a("/admin/matkul") { +"Matakuliah" }
-    a("/admin/account") { +"Account" }
-    a("/logout") { +"Logout" }
-  }
+  nav("navbar") {
+        a("/admin", classes = "nav-link") { +"Dashboard" }
+        a("/admin/mhs", classes = "nav-link") { +"Mahasiswa" }
+        a("/admin/dosen", classes = "nav-link") { +"Dosen" }
+        a("/admin/matkul", classes = "nav-link") { +"Matakuliah" }
+        a("/admin/account", classes = "nav-link") { +"Account" }
+        a("/logout", classes = "nav-link") { +"Logout" }
+    }
 }

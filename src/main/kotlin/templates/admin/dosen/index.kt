@@ -5,13 +5,15 @@ import com.example.templates.components.adminNavbar
 import kotlinx.html.*
 
 fun HTML.index(list: List<DosenPublicDTO>) {
-  head { title { +"Data Dosen" } }
+  head { title { +"Data Dosen" } 
+        link(rel = "stylesheet", href = "/static/style.css", type = "text/css")
+  }
   body {
     adminNavbar()
 
     h1 { +"Data Dosen" }
     a("/admin/dosen/add") { +"+ Tambah Dosen" }
-    table {
+    table(classes = "table-dosen") {
       tr {
         th { +"ID" }
         th { +"NIDN" }

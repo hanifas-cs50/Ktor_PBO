@@ -6,7 +6,9 @@ import com.example.templates.components.adminNavbar
 import kotlinx.html.*
 
 fun HTML.form(matkul: MatkulDTO? = null, dosenList: List<DosenPublicDTO>) {
-  head { title { +if (matkul == null) "Tambah Matakuliah" else "Edit Matakuliah" } }
+  head { title { +if (matkul == null) "Tambah Matakuliah" else "Edit Matakuliah" } 
+        link(rel = "stylesheet", href = "/static/style.css", type = "text/css")
+  }
   body {
     adminNavbar()
 
