@@ -5,7 +5,9 @@ import com.example.templates.components.adminNavbar
 import kotlinx.html.*
 
 fun HTML.index(list: List<MatkulWithDosenDTO>) {
-  head { title { +"Data Matakuliah" } }
+  head { title { +"Data Matakuliah" } 
+        link(rel = "stylesheet", href = "/static/style.css", type = "text/css")
+  }
   body {
     adminNavbar()
     h1 { +"Data Matakuliah" }

@@ -3,6 +3,7 @@ package com.example.routes
 import com.example.UserSession
 import com.example.templates.guestIndex
 import io.ktor.http.*
+import io.ktor.server.http.content.*
 import io.ktor.server.application.*
 import io.ktor.server.html.*
 import io.ktor.server.plugins.*
@@ -22,6 +23,10 @@ fun RoleGuard(requiredRole: String) = createRouteScopedPlugin("RoleGuard") {
 
 fun Application.configureRouting() {
   routing {
+    static("/static") {
+      resources("static")
+    }
+
     get("/") {
       val session = call.sessions.get<UserSession>()
       if (session == null) {

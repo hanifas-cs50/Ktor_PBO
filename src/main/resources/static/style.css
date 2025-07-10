@@ -1,0 +1,324 @@
+/* Reset & Font */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f4f6f8;
+    color: #333;
+    padding: 2rem;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+body, .form-box, .nav-link, .btn-submit {
+    transition: all 0.3s ease;
+}
+
+/* Responsive display */
+@media (max-width: 600px) {
+    body {
+        padding: 1rem;
+    }
+
+    .form-box {
+        padding: 1rem;
+    }
+
+    .nav-link {
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+    }
+}
+
+/* Header */
+.heading {
+    font-size: 2.2rem;
+    margin-bottom: 1.5rem;
+    font-weight: bold;
+    color: #2c3e50;
+    text-align: center;
+    border-bottom: 3px solid #4CAF50;
+    padding-bottom: 0.5rem;
+}
+
+/* Container for Links */
+.link-container {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+}
+
+/* Navigation Links */
+.nav-link {
+    background: linear-gradient(to right, #4CAF50, #66bb6a);
+    text-decoration: none;
+    color: #fff;
+    background-color: #4CAF50;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 500;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease-in-out;
+}
+
+.nav-link:hover {
+    background-color: #388e3c;
+    background: linear-gradient(to right, #388e3c, #43a047);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    margin-top: auto;
+    padding: 1rem;
+    font-size: 0.9rem;
+    color: #888;
+}
+
+/* Bagian Login (login.kt) */
+.form-box {
+    max-width: 400px;
+    margin: 0 auto;
+    background-color: #ffffff;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+    
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #333;
+    font-weight: 600;
+}
+
+.form-control {
+    width: 100%;
+    padding: 0.6rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem;
+}
+
+.btn-submit {
+    width: 100%;
+    background-color: #4CAF50;
+    color: white;
+    padding: 0.75rem;
+    font-size: 1rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn-submit:hover {
+    background-color: #45a049;
+}
+
+/* Admin Navbar */
+.navbar {
+    display: flex;
+    gap: 1rem;
+    padding: 1rem 2rem;
+    background-color: #4CAF50;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.navbar .nav-link {
+    color: white;
+    text-decoration: none;
+    background-color: #388e3c;
+    padding: 0.6rem 1.2rem;
+    border-radius: 6px;
+    font-weight: 500;
+    transition: background-color 0.3s ease;
+}
+
+.navbar .nav-link:hover {
+    background-color: #2e7d32;
+}
+
+/* Dashboard Container */
+.dashboard-container {
+    max-width: 800px;
+    margin: 2rem auto;
+    background-color: #fff;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Stats Grid */
+.stats-grid {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 2rem;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.stat-box {
+    flex: 1 1 200px;
+    background-color: #f0f2f5;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #2c3e50;
+    text-align: center;
+}
+
+/* Tabel Data Mahasiswa */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1.5rem;
+    background-color: #fff;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+th, td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    background-color: #4CAF50;
+    color: white;
+    font-weight: 600;
+}
+
+tr:hover {
+    background-color: #f1f1f1;
+}
+
+a[href*="edit"], a[href*="delete"] {
+    color: #2196F3;
+    font-weight: 500;
+    text-decoration: none;
+    margin-right: 0.5rem;
+}
+
+a[href*="delete"] {
+    color: #f44336;
+}
+
+/* Tombol Tambah Mahasiswa */
+a[href*="/admin/mhs/add"] {
+    display: inline-block;
+    margin-top: 1rem;
+    background-color: #4CAF50;
+    color: white;
+    padding: 0.6rem 1.2rem;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: background-color 0.3s ease;
+}
+
+a[href*="/admin/mhs/add"]:hover {
+    background-color: #388e3c;
+}
+
+/* Form Mahasiswa */
+form {
+    max-width: 500px;
+    margin: 2rem auto;
+    background-color: #fff;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+}
+
+form p {
+    margin-bottom: 1rem;
+}
+
+form label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: #333;
+}
+
+form input[type="text"],
+form input[type="password"],
+form textarea {
+    width: 100%;
+    padding: 0.6rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 1rem;
+}
+
+form input[type="submit"] {
+    background-color: #4CAF50;
+    color: white;
+    padding: 0.75rem;
+    font-size: 1rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+form input[type="submit"]:hover {
+    background-color: #45a049;
+}
+
+.table-dosen {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1.5rem;
+    background-color: #fafafa;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.table-dosen th,
+.table-dosen td {
+    padding: 0.5rem 1rem;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+.table-dosen th {
+    background-color: #66bb6a;
+    color: white;
+    font-weight: 600;
+}
+
+.table-dosen tr:hover {
+    background-color: #f9f9f9;
+}
+
+form select {
+  width: 100%;
+  padding: 0.6rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+  background-color: white;
+  color: #333;
+}
