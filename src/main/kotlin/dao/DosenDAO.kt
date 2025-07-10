@@ -88,7 +88,7 @@ object DosenDAO {
     return transaction { Dosen.deleteWhere { Dosen.id_dosen eq id } > 0 }
   }
 
-  fun updateDosen(id: Int, alamat: String, nama: String, password: String? = null): Boolean {
+  fun updateDosen(id: Int, nama: String, alamat: String, password: String? = null): Boolean {
     return transaction {
       Dosen.update({ Dosen.id_dosen eq id }) {
         it[Dosen.nama] = nama
