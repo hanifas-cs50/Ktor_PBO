@@ -4,17 +4,41 @@ import com.example.templates.components.dosenNavbar
 import kotlinx.html.*
 
 fun HTML.addBimbinganPage() {
-  head { title { +"Tambah Bimbingan" } }
-  body {
-    dosenNavbar()
-    h1 { +"Tambah Mahasiswa Bimbingan" }
-
-    form(action = "/dosen/bimbingan/add", method = FormMethod.post) {
-      p {
-        +"NIM Mahasiswa:"
-        textInput { name = "nim" }
-      }
-      p { submitInput { value = "Tambahkan" } }
+    head {
+        title { +"Tambah Bimbingan" }
+        link(rel = "stylesheet", href = "/static/style.css", type = "text/css")
     }
-  }
+
+    body {
+        dosenNavbar()
+
+        div("form-container") {
+            h1("heading") { +"Tambah Mahasiswa Bimbingan" }
+
+            form(action = "/dosen/bimbingan/add", method = FormMethod.post) {
+                div("form-group") {
+                    label {
+                        htmlFor = "nim"
+                        +"NIM Mahasiswa:"
+                    }
+                    textInput(name = "nim") {
+                        id = "nim"
+                        placeholder = "Masukkan NIM"
+                    }
+                }
+
+                div("form-group") {
+                    submitInput(classes = "submit-button") {
+                        value = "Tambahkan"
+                    }
+                }
+            }
+
+            p {
+                a(href = "/dosen/bimbingan", classes = "action-link") {
+                    +"← Kembali ke Daftar Bimbingan"
+                }
+            }
+        }
+    }
 }

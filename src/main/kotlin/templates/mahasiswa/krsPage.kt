@@ -6,35 +6,45 @@ import kotlinx.html.*
 import com.example.templates.components.mahasiswaNavbar
 
 fun HTML.krsPage(krsList: List<Pair<MatkulDTO, Int?>>) {
-    head { title { +"KRS Mahasiswa" } }
+    head {
+        title { +"KRS Mahasiswa" }
+        link(rel = "stylesheet", href = "/static/style.css", type = "text/css")
+    }
     body {
         mahasiswaNavbar()
 
-        h1 { +"Kartu Rencana Studi (KRS)" }
+        div("dashboard-container") {
+            h1("heading") { +"Kartu Rencana Studi (KRS)" }
 
-        h2 { +"Tambah KRS" }
-        form(action = "/mahasiswa/krs", method = FormMethod.post) {
-            p {
-                +"Kode Mata Kuliah:"
-                textInput { name = "kode_matkul" }
+            h2 { +"Tambah KRS" }
+            form(action = "/mahasiswa/krs", method = FormMethod.post) {
+                p {
+                    label { +"Kode Mata Kuliah:" }
+                    textInput(classes = "form-control") {
+                        name = "kode_matkul"
+                        placeholder = "Contoh: IF101"
+                    }
+                }
+                p {
+                    submitInput(classes = "btn-submit") {
+                        value = "Tambahkan"
+                    }
+                }
             }
-            p {
-                submitInput { value = "Tambahkan" }
-            }
-        }
 
-        h2 { +"Daftar KRS Belum Dinilai" }
-        table {
-            tr {
-                th { +"Kode" }
-                th { +"Mata Kuliah" }
-                th { +"SKS" }
-            }
-            krsList.forEach { (matkul, _) ->
+            h2 { +"Daftar KRS Belum Dinilai" }
+            table {
                 tr {
-                    td { +matkul.kode_matkul }
-                    td { +matkul.nama_matkul }
-                    td { +"${matkul.sks}" }
+                    th { +"Kode" }
+                    th { +"Mata Kuliah" }
+                    th { +"SKS" }
+                }
+                krsList.forEach { (matkul, _) ->
+                    tr {
+                        td { +matkul.kode_matkul }
+                        td { +matkul.nama_matkul }
+                        td { +"${matkul.sks}" }
+                    }
                 }
             }
         }

@@ -1,36 +1,45 @@
 package com.example.templates.dosen
 
-import com.example.dao.MahasiswaPublicDTO
 import com.example.templates.components.dosenNavbar
+import com.example.dao.MahasiswaPublicDTO
 import kotlinx.html.*
 
 fun HTML.bimbinganPage(mahasiswaList: List<MahasiswaPublicDTO>) {
-  head { title { +"Mahasiswa Bimbingan" } }
-  body {
-    dosenNavbar()
-    h1 { +"Mahasiswa Bimbingan" }
-
-    table {
-      tr {
-        th { +"NIM" }
-        th { +"Nama" }
-        th { +"Alamat" }
-        th { +"Aksi" }
-      }
-      mahasiswaList.forEach { mhs ->
-        tr {
-          td { +mhs.nim }
-          td { +mhs.nama }
-          td { +mhs.alamat }
-          td {
-            form(action = "/dosen/bimbingan/delete/${mhs.id_mhs}", method = FormMethod.post) {
-              submitInput { value = "Hapus" }
-            }
-          }
-        }
-      }
+    head {
+        title { +"Tambah Bimbingan" }
+        link(rel = "stylesheet", href = "/static/style.css", type = "text/css")
     }
 
-    a("/dosen/bimbingan/add") { +"Tambah Bimbingan" }
-  }
+    body {
+        dosenNavbar()
+
+        div("form-container") {
+            h1("heading") { +"Tambah Mahasiswa Bimbingan" }
+
+            form(action = "/dosen/bimbingan/add", method = FormMethod.post) {
+                div("form-group") {
+                    label {
+                        htmlFor = "nim"
+                        +"NIM Mahasiswa:"
+                    }
+                    textInput(name = "nim") {
+                        id = "nim"
+                        placeholder = "Masukkan NIM"
+                    }
+                }
+
+                div("form-group") {
+                    submitInput(classes = "submit-button") {
+                        value = "Tambahkan"
+                    }
+                }
+            }
+
+            p {
+                a(href = "/dosen/bimbingan", classes = "action-link") {
+                    +"← Kembali ke Daftar Bimbingan"
+                }
+            }
+        }
+    }
 }
